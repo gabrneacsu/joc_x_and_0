@@ -1,4 +1,5 @@
-tabla_de_joc = {1: '', 2: '', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '', 9: ''}
+
+# tabla_principala = {1: '', 2: '', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '', 9: ''}
 
 def completare_lista(tabla):
     lista = [
@@ -13,13 +14,14 @@ def completare_lista(tabla):
     ]
     return lista
 
-#pune valoarea unde este liber doar
+#intoarce adevarat doar daca pozitia e libera
 def setare_element(tabla, poz)->bool:
     if tabla[poz] == '':
         return True
-    else:
-        return False
+    return False
 
+# insereaza X pentru utilizator, in functie de ce pozitie isi alege acesta
+#TODO de rezolvat astfel incat functia sa intoarca tabla (este obligatoriu ca functia sa intoarca ceva)
 def introducere_elem_nou(tabla, elem):
     while True:
         try:
@@ -30,12 +32,13 @@ def introducere_elem_nou(tabla, elem):
                 continue
             if setare_element(tabla, pozitie): #daca pozitia e libera
                 tabla[pozitie] = elem
-                break
+                break #return tabla
             else:
                 print('Pozitia este deja ocupata! te rog sa alegi alta pozitie!')
         except ValueError:
             print('Te rog sa introduci un numar!')
 
+# testeaza daca exista o combinatie castigatoare
 def verificare_castig(lista)->bool:
     castig = False
     for lista_mica in lista:
@@ -45,11 +48,18 @@ def verificare_castig(lista)->bool:
 
 def remiza(tabla):
     plina = True
-    for i in range(1, 10):
-        if tabla[i] == '':
-            plina = False
-            break
+    if '' in tabla.values():
+        plina = False
     return plina
+
+
+    # plina = True
+    # # if '' in tabla.values()
+    # for i in range(1, 10):
+    #     if tabla[i] == '':
+    #         plina = False
+    #         break
+    # return plina
 
 def resetare():
 
@@ -57,15 +67,15 @@ def resetare():
 
 
 def afisare_tabla(tabla):
-    print(f"{tabla[1]} | {tabla[2]} | {tabla[3]}\n---------\n{tabla[4]} | {tabla[5]} | {tabla[6]}\n---------\n{tabla[7]} | {tabla[8]} | {tabla[9]}\n")
+    return f"{tabla[1]} | {tabla[2]} | {tabla[3]}\n---------\n{tabla[4]} | {tabla[5]} | {tabla[6]}\n---------\n{tabla[7]} | {tabla[8]} | {tabla[9]}\n"
 
 # locurile libere
 def locuri_libere(tabla):
-    locuri_libere = []
+    locuri_l = []
     for k, v in tabla.items():
         if v == '':
-            locuri_libere.append(k)
-    return locuri_libere
+            locuri_l.append(k)
+    return locuri_l
 
 # verificarea si blocarea
 def blocheaza_verifica(tabla, semn):
@@ -83,27 +93,29 @@ def blocheaza_verifica(tabla, semn):
     return False
 
 # mutarea calculator
-def mutare_calculator(tabla, dif):
+#TODO de rezolvat astfel incat functia sa intoarca tabla, nu sa aiba un return gol
+def mutare_calculator(tabla_bis, dif):
     if dif == 'greu':
         # verificare daca calculatorul castiga
-        if blocheaza_verifica(tabla, '0'):
+        if blocheaza_verifica(tabla_bis, '0'):
             return
         # verificare daca utilizatorul castiga si blocare
-        if blocheaza_verifica(tabla, 'X'):
+        if blocheaza_verifica(tabla_bis, 'X'):
             return
         # mutare pe pozitiile favorabile daca nu blocam sau castigam
         pozitii_favorabile = [5, 1, 3, 7, 9, 2, 4, 6, 8]
         for pozitie in pozitii_favorabile:
-            if tabla[pozitie] == '':
-                tabla[pozitie] = '0'
+            if tabla_bis[pozitie] == '':
+                tabla_bis[pozitie] = '0'
                 return
     elif dif == 'usor':
         pozitii_favorabile = [5, 1, 3, 7, 9, 2, 4, 6, 8]
         for pozitie in pozitii_favorabile:
-            if tabla[pozitie] == '':
-                tabla[pozitie] = '0'
+            if tabla_bis[pozitie] == '':
+                tabla_bis[pozitie] = '0'
                 return
 
+# ajuta utilizatorul sa aleaga nivelul de dificultate
 def dificultate():
     while True:
         dif = input("Alege dificultatea jocului: (usor/greu) ")
@@ -112,7 +124,7 @@ def dificultate():
             continue
         else:
             return dif
-
+#TODO de rezolvat astfel incat functia sa intoarca ceva (spre exemplu, rezultatul_jocului, de tip string)
 def principal():
     # pentru mai multe jocuri consecutive
     while True:
@@ -121,19 +133,21 @@ def principal():
         dif = dificultate()
         # pentru un singur joc
         while True:
-            afisare_tabla(tabla_de_joc)
+            print(afisare_tabla(tabla_de_joc))
             if jucator_activ == 'utilizator':
                 introducere_elem_nou(tabla_de_joc, 'X')
             else:
+                print(tabla_de_joc, 'linia 138')
                 mutare_calculator(tabla_de_joc, dif)
+                print(tabla_de_joc, 'linia 140')
             lista = completare_lista(tabla_de_joc)
             if verificare_castig(lista):
-                afisare_tabla(tabla_de_joc)
-                print(f'A castigat: {jucator_activ}ul')
+                print(afisare_tabla(tabla_de_joc))
+                print(f'A castigat: {jucator_activ}ul') #return rezultat joc
                 break
             elif remiza(tabla_de_joc):
-                afisare_tabla(tabla_de_joc)
-                print('Remiza!')
+                print(afisare_tabla(tabla_de_joc))
+                print('Remiza!') #return rezultat joc
                 break
             if jucator_activ == 'utilizator':
                 jucator_activ = 'calculator'
